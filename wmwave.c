@@ -136,7 +136,7 @@ void DisplayWireless(void) {
   struct iw_range range;
 					      
   char line[255];
-  char iface[5];
+  char iface[6];
   char status [3];
   float link = 0;
   float level = 0;
