@@ -1,6 +1,14 @@
+wmwave (0.4-5) unstable; urgency=low
+
+  * recompile against linux-kernel-headers, fixing segfault on 2.6 kernels
+    (Closes: #201713)
+  * minor source code cleanups
+
+ -- Guido Guenther <agx@debian.org>  Tue, 23 Dec 2003 00:10:32 +0100
+
 wmwave (0.4-4) unstable; urgency=low
 
-  * manpage cleanups by Ludovic Rousseau, thanks (Closes #216597)
+  * manpage cleanups by Ludovic Rousseau, thanks (Closes: #216597)
   * fix typo in copyright file
   * sanitize Makfile a bit and handle DH_BUILD_OPTIONS
   * fix possible overflow in iface[]/wmwave.c
