@@ -48,7 +48,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp.
-	$(MAKE) install DESTDIR=`pwd`/debian/wmwave INSTALL_OPTS=$(INSTALL_OPTS)
+	$(MAKE) install DESTDIR=`pwd`/debian/wmwave INSTALL_OPTS="$(INSTALL_OPTS)"
 
 
 # Build architecture-independent files here.
