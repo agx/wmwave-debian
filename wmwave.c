@@ -1,11 +1,11 @@
 /*
- * wmtop.c -- WindowMaker process view dock app
+ * wmwave.c -- WindowMaker wireless statistics view dock app
  * Derived by Carsten Schuermann   carsten@schuermann.org
  * http://www.schuermann.org/~carsten
  * from
  * Dan Piponi dan@tanelorn.demon.co.uk
  * http://www.tanelorn.demon.co.uk
- * who derived it 
+ * who derived it
  * from code originally contained in wmsysmon by Dave Clark (clarkd@skynet.ca)
  * This software is licensed through the GNU General Public License.
  * $Log: wmwave.c,v $
