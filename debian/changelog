@@ -4,8 +4,9 @@ wmwave (0.4-4) unstable; urgency=low
   * fix typo in copyright file
   * sanitize Makfile a bit and handle DH_BUILD_OPTIONS
   * fix possible overflow in iface[]/wmwave.c
+  * bump Standards-Version to 3.6.1 
 
- -- Guido Guenther <agx@debian.org>  Sun, 26 Oct 2003 19:50:16 +0100
+ -- Guido Guenther <agx@debian.org>  Sun, 26 Oct 2003 19:59:59 +0100
 
 wmwave (0.4-3) unstable; urgency=low
 
