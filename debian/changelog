@@ -1,3 +1,12 @@
+wmwave (0.4-4) unstable; urgency=low
+
+  * manpage cleanups by Ludovic Rousseau, thanks (Closes #216597)
+  * fix typo in copyright file
+  * sanitize Makfile a bit and handle DH_BUILD_OPTIONS
+  * fix possible overflow in iface[]/wmwave.c
+
+ -- Guido Guenther <agx@debian.org>  Sun, 26 Oct 2003 19:50:16 +0100
+
 wmwave (0.4-3) unstable; urgency=low
 
   * package taken from Noah L. Meyerhans, thanks.
@@ -30,7 +39,3 @@ wmwave (0.4-1) unstable; urgency=low
 
  -- Noah Meyerhans <frodo@morgul.net>  Tue, 07 Feb 2001 16:42:03 -0500
 
-Local variables:
-mode: debian-changelog
-add-log-mailing-address "frodo@morgul.net"
-End:
