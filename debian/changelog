@@ -1,0 +1,36 @@
+wmwave (0.4-3) unstable; urgency=low
+
+  * package taken from Noah L. Meyerhans, thanks.
+  * remove CVS/ directories (Closes: #201220)
+  * remove executable bits from wmwave.c
+  * fix wrong link display by calling SIOCGIWRANGE ioctl (Closes: #151376)
+  * fix typo in description (Closes: #125502)
+  * echo 4 > debian/compat, adjust debhelper dependency
+  * bump standards version to 3.5.6
+
+ -- Guido Guenther <agx@debian.org>  Sun, 13 Jul 2003 22:32:27 +0200
+
+wmwave (0.4-2.1) unstable; urgency=low
+
+  * NMU
+  * debian/control: added xlibs-dev to Build-Depends
+
+ -- Branden Robinson <branden@debian.org>  Fri, 13 Jul 2001 16:45:23 -0500
+
+wmwave (0.4-2) unstable; urgency=low
+
+  * Fixed a bug in the entry in the Debian menu system.  (Closes: Bug#99745)
+  * Bumped the standards version up to 3.5.4.0
+
+ -- Noah Meyerhans <noahm@debian.org>  Sat,  2 Jun 2001 22:29:54 -0400
+
+wmwave (0.4-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Noah Meyerhans <frodo@morgul.net>  Tue, 07 Feb 2001 16:42:03 -0500
+
+Local variables:
+mode: debian-changelog
+add-log-mailing-address "frodo@morgul.net"
+End:

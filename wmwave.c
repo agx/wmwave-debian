@@ -51,7 +51,10 @@
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
+#include <sys/socket.h>
 #include <sys/time.h>
+
+#include <linux/wireless.h>
 
 #include <X11/Xlib.h>
 #include <X11/xpm.h>
@@ -85,6 +88,7 @@ void BlitNum(int num, int x, int y);
 void wmwave_routine(int, char **);
 void DrawBar(float percent, int dx, int dy);
 void DrawGreenBar(float percent, int dx, int dy);
+void iw_getinf_range(char *ifname, struct iw_range *range);
 
 inline void DrawBar(float percent, int dx, int dy) {
   int tx;
@@ -129,6 +133,7 @@ float min (float x, float y) {
  */
 void DisplayWireless(void) {
   FILE *wireless;   // File handle for /proc/net/wireless
+  struct iw_range range;
 					      
   char line[255];
   char iface[5];
@@ -150,6 +155,9 @@ void DisplayWireless(void) {
       else {
 	sscanf(line,"%s %s %f %f %f %d %d %d",
 	       iface,status,&link,&level,&noise,&nwid,&crypt,&misc);
+	iw_getinf_range(iface, &range);
+	if( ! range.max_qual.qual ) /* avoid div by zero without a card */
+		range.max_qual.qual = 100;
 	mode = 1;
       }
       fclose(wireless);
@@ -159,11 +167,15 @@ void DisplayWireless(void) {
       
       switch (mode) {
       case 1: BlitString("Quality",4,4);
-	if (link<=10) {DrawRedDot ();}
-	else if (link<=20) {DrawYellowDot ();}
-	else {DrawGreenDot();};
+	if (link<=0.1 * range.max_qual.qual) {
+		DrawRedDot ();
+	} else if (link<=0.2 * range.max_qual.qual) {
+		DrawYellowDot ();
+	} else {
+		DrawGreenDot();
+	}
 	BlitString("Link     ", 4,18);	
-	DrawBar(min ((int)(link * 1.8), 100.0), 4, 27);
+	DrawBar(min((link/(float)range.max_qual.qual) * 100.0, 100.0), 4, 27);
 	BlitString("Level    ", 4,32);
 	DrawGreenBar(min ((int)(level * 0.3), 100.0), 4, 41);
 	BlitString("Noise    ", 4,46);
@@ -237,7 +249,7 @@ int main(int argc, char *argv[]) {
       }
     }
   }
-  
+
   wmwave_routine(argc, argv);
   
   return 0;
@@ -296,6 +308,33 @@ void wmwave_routine(int argc, char **argv) {
     
     usleep(update_rate);
   }
+}
+
+/* get range information */
+void iw_getinf_range(char *ifname, struct iw_range *range)
+{
+    int 	skfd;
+    struct iwreq iwr;
+
+    memset(range, 0, sizeof(struct iw_range));
+
+    if ((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	    return;
+    }
+	
+    strncpy(iwr.ifr_name, ifname, IFNAMSIZ);
+    if (ioctl(skfd, SIOCGIWNAME, &iwr) < 0) {
+	    return;
+    }
+
+    iwr.u.data.pointer = (caddr_t)range;
+    iwr.u.data.length = sizeof(struct iw_range);
+    iwr.u.data.flags = 0;
+    if (ioctl(skfd, SIOCGIWRANGE, &iwr) < 0) {
+	    return;
+    }
+
+    close(skfd);
 }
 
 /*

@@ -1,0 +1,2 @@
+?package(wmwave):needs=X11 section=Apps/System\
+  title="wmwave" command="/usr/bin/wmwave"

@@ -32,10 +32,5 @@ clean::
 
 install:: wmwave
 	strip wmwave
-	cp -f wmwave /usr/bin/
-	chmod 755 /usr/bin/wmwave
-	chown root:root /usr/bin/wmwave
-	cp -f wmwave.1 /usr/man/man1
-	chmod 644 /usr/man/man1/wmwave.1
-	chown root:root /usr/man/man1/wmwave.1
-	@echo "wmwave Installation finished..."
+	install -o root -g root -m 0755 wmwave $(DESTDIR)/usr/bin/
+	install -o root -g root -m 0644 wmwave.1 $(DESTDIR)/usr/share/man/man1/
