@@ -8,20 +8,20 @@
 
 LIBDIR = -L/usr/X11R6/lib
 LIBS   = -lXpm -lXext -lX11 -lm
-FLAGS = -O6
+CFLAGS = -O2 -Wall
 OBJS =	 \
 		wmgeneral.o \
 
 default:all
 
 .c.o:
-	cc -I/usr/X11R6/share/include $(FLAGS) -c -Wall $< -o $*.o
+	cc $(CFLAGS) -I/usr/X11R6/share/include -c $< -o $*.o
 
 wmwave.o: wmwave.c wmwave-master.xpm
-	cc -I/usr/X11R6/share/include $(FLAGS) -c -Wall wmwave.c -o $*.o
+	cc $(CFLAGS) -I/usr/X11R6/share/include -c wmwave.c -o $*.o
 
 wmwave: $(OBJS) wmwave.o
-	cc $(FLAGS) -o wmwave $(OBJS) -lXext $(LIBDIR) $(LIBS) wmwave.o
+	cc $(CFLAGS) -o wmwave $(OBJS) -lXext $(LIBDIR) $(LIBS) wmwave.o
 
 all:: wmwave
 
@@ -31,6 +31,5 @@ clean::
 	rm -f *~
 
 install:: wmwave
-	strip wmwave
-	install -o root -g root -m 0755 wmwave $(DESTDIR)/usr/bin/
+	install $(INSTALL_OPTS) -o root -g root -m 0755 wmwave $(DESTDIR)/usr/bin/
 	install -o root -g root -m 0644 wmwave.1 $(DESTDIR)/usr/share/man/man1/

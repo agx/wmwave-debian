@@ -5,6 +5,17 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_OPTS = -s
+endif
+
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
@@ -15,7 +26,7 @@ build-stamp:
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE)
+	$(MAKE) CFLAGS="$(CFLAGS)"
 	#/usr/bin/docbook-to-man debian/wmwave.sgml > wmwave.1
 
 	touch build-stamp
@@ -37,7 +48,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp.
-	$(MAKE) install DESTDIR=`pwd`/debian/wmwave
+	$(MAKE) install DESTDIR=`pwd`/debian/wmwave INSTALL_OPTS=$(INSTALL_OPTS)
 
 
 # Build architecture-independent files here.
