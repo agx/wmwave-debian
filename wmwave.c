@@ -88,12 +88,12 @@ void BlitNum(int num, int x, int y);
 void wmwave_routine(int, char **);
 void DrawBar(float percent, int dx, int dy);
 void DrawGreenBar(float percent, int dx, int dy);
-void iw_getinf_range(char *ifname, struct iw_range *range);
+int  iw_getinf_range(const char *ifname, struct iw_range *range);
 
 inline void DrawBar(float percent, int dx, int dy) {
   int tx;
   
-  tx = (float)((float)54 * ((float)percent / (float)100.0));
+  tx = (int)(54.0 * (percent * 0.01));
   copyXPMArea(67, 36, tx, 4, dx, dy);
   copyXPMArea(67, 43, 54-tx, 4, dx+tx, dy); 
 }
@@ -102,7 +102,7 @@ inline void DrawBar(float percent, int dx, int dy) {
 inline void DrawGreenBar(float percent, int dx, int dy) {
   int tx;
   
-  tx = (float)((float)54 * ((float)percent / (float)100.0));
+  tx = (int)(54.0 * (percent * 0.01));
   copyXPMArea(67, 58, tx, 4, dx, dy);
   copyXPMArea(67, 43, 54-tx, 4, dx+tx, dy); 
 }
@@ -128,9 +128,6 @@ float min (float x, float y) {
   else {return y;}
 }
 
-/*
- * Find CPU times for all processes
- */
 void DisplayWireless(void) {
   FILE *wireless;   // File handle for /proc/net/wireless
   struct iw_range range;
@@ -151,20 +148,17 @@ void DisplayWireless(void) {
       fgets(line,sizeof(line),wireless);
       if (fgets(line,sizeof(line),wireless) == NULL) {
 	mode = 0;
-      }
-      else {
+      } else {
 	sscanf(line,"%s %s %f %f %f %d %d %d",
 	       iface,status,&link,&level,&noise,&nwid,&crypt,&misc);
-	iw_getinf_range(iface, &range);
-	if( ! range.max_qual.qual ) /* avoid div by zero without a card */
+	iface[strlen(iface)-1] = 0; /* remove ':' */
+	if( (!iw_getinf_range(iface, &range)) || (!range.max_qual.qual) )
 		range.max_qual.qual = 100;
 	mode = 1;
       }
       fclose(wireless);
-      
-      
+
       /* Print channel information, and signal ratio */
-      
       switch (mode) {
       case 1: BlitString("Quality",4,4);
 	if (link<=0.1 * range.max_qual.qual) {
@@ -175,7 +169,7 @@ void DisplayWireless(void) {
 		DrawGreenDot();
 	}
 	BlitString("Link     ", 4,18);	
-	DrawBar(min((link/(float)range.max_qual.qual) * 100.0, 100.0), 4, 27);
+	DrawBar(min((link/(float)range.max_qual.qual), 1.0) * 100.0, 4, 27);
 	BlitString("Level    ", 4,32);
 	DrawGreenBar(min ((int)(level * 0.3), 100.0), 4, 41);
 	BlitString("Noise    ", 4,46);
@@ -193,7 +187,8 @@ void DisplayWireless(void) {
       };
     }
   else {
-    printf ("Wirless device /proc/net/wireless not found\nEnable radio networking and recompile your kernel\n");
+    printf ("Wirless device /proc/net/wireless not found\n"
+            "Enable radio networking and recompile your kernel\n");
     exit (0);
   }
 }
@@ -311,7 +306,7 @@ void wmwave_routine(int argc, char **argv) {
 }
 
 /* get range information */
-void iw_getinf_range(char *ifname, struct iw_range *range)
+int iw_getinf_range(const char *ifname, struct iw_range *range)
 {
     int 	skfd;
     struct iwreq iwr;
@@ -319,22 +314,24 @@ void iw_getinf_range(char *ifname, struct iw_range *range)
     memset(range, 0, sizeof(struct iw_range));
 
     if ((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-	    return;
+	    return 0;
     }
 	
     strncpy(iwr.ifr_name, ifname, IFNAMSIZ);
     if (ioctl(skfd, SIOCGIWNAME, &iwr) < 0) {
-	    return;
+	    close(skfd);
+	    return 0;
     }
 
     iwr.u.data.pointer = (caddr_t)range;
     iwr.u.data.length = sizeof(struct iw_range);
     iwr.u.data.flags = 0;
     if (ioctl(skfd, SIOCGIWRANGE, &iwr) < 0) {
-	    return;
+	    close(skfd);
+	    return 0;
     }
-
     close(skfd);
+    return 1;
 }
 
 /*
