@@ -1,3 +1,12 @@
+wmwave (0.4-6) unstable; urgency=low
+
+  * Build-Depend on the specific x libraries instead of libx11-dev
+    (Closes: 346783)
+  * Bump standards version to 3.6.2 (no source changes)
+  * quote all menu strings 
+
+ -- Guido Guenther <agx@debian.org>  Mon,  9 Jan 2006 10:10:35 +0100
+
 wmwave (0.4-5) unstable; urgency=low
 
   * recompile against linux-kernel-headers, fixing segfault on 2.6 kernels
