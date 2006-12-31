@@ -79,7 +79,6 @@ time_t curtime;
 time_t prevtime;
 
 int mode = 0;    // default: no card detected
-int screen = 0;  // default: Quality screen is displayed
 
 void usage(void);
 void printversion(void);
@@ -88,7 +87,7 @@ void BlitNum(int num, int x, int y);
 void wmwave_routine(int, char **);
 void DrawBar(float percent, int dx, int dy);
 void DrawGreenBar(float percent, int dx, int dy);
-int  iw_getinf_range(const char *ifname, struct iw_range *range);
+int  iw_getinf_stats(const char *ifname, struct iw_range *range, struct iw_statistics *stats);
 
 inline void DrawBar(float percent, int dx, int dy) {
   int tx;
@@ -129,19 +128,25 @@ float min (float x, float y) {
 }
 
 void DisplayWireless(void) {
-  FILE *wireless;   // File handle for /proc/net/wireless
+
   struct iw_range range;
-					      
+  struct iw_statistics stats;
+
+  float link;
+  float level;
+  float max_level;
+  float noise;
+  float max_noise;
+
+
+  FILE *wireless;   // File handle for /proc/net/wireless
   char line[255];
   char iface[6];
   char status [3];
-  float link = 0;
-  float level = 0;
-  float noise = 0;
   int nwid = 0;
   int crypt = 0;
   int misc = 0;
-  
+
   if ((wireless = fopen ("/proc/net/wireless", "r")) != NULL)
     {
       fgets(line,sizeof(line),wireless);
@@ -152,11 +157,59 @@ void DisplayWireless(void) {
 	sscanf(line,"%s %s %f %f %f %d %d %d",
 	       iface,status,&link,&level,&noise,&nwid,&crypt,&misc);
 	iface[strlen(iface)-1] = 0; /* remove ':' */
-	if( (!iw_getinf_range(iface, &range)) || (!range.max_qual.qual) )
+	if( (!iw_getinf_stats(iface, &range, &stats)) || (!range.max_qual.qual) )
 		range.max_qual.qual = 100;
 	mode = 1;
       }
       fclose(wireless);
+
+
+      /* dBm values need a special treatment */
+      if (stats.qual.updated & IW_QUAL_DBM)
+	{
+
+	  level = (float)(stats.qual.level - 0x100);
+	  max_level = (float)(range.max_qual.level - 0x100);
+
+	  noise = (float)(stats.qual.noise - 0x100);
+	  max_noise = (float)(range.max_qual.noise - 0x100);
+	}
+      else
+	{
+	  level = (float)stats.qual.level;
+	  max_level = (float)range.max_qual.level;
+
+	  noise = (float)stats.qual.noise;
+	  max_noise = (float)range.max_qual.noise;
+	}
+
+      if (!(stats.qual.updated & IW_QUAL_LEVEL_INVALID)
+	  && (fabsf(level) <= fabsf(max_level)))
+	{
+	  level /= max_level;
+	  level *= 100.0;
+	}
+      else
+	level = 0.0;
+
+      if (!(stats.qual.updated & IW_QUAL_NOISE_INVALID)
+	  && (fabsf(noise) <= fabsf(max_noise)))
+	{
+	  noise /= max_noise;
+	  noise *= 100.0;
+	}
+      else
+	noise = 0.0;
+
+      if (!(stats.qual.updated & IW_QUAL_QUAL_INVALID)
+	  && (abs(stats.qual.qual) <= abs(range.max_qual.qual)))
+	{
+	  link = stats.qual.qual;
+	  link /= (float) range.max_qual.qual;
+	  link *= 100.0;
+	}
+      else
+	link = 0.0;
 
       /* Print channel information, and signal ratio */
       switch (mode) {
@@ -169,11 +222,11 @@ void DisplayWireless(void) {
 		DrawGreenDot();
 	}
 	BlitString("Link     ", 4,18);	
-	DrawBar(min((link/(float)range.max_qual.qual), 1.0) * 100.0, 4, 27);
+	DrawBar(min(link, 100.0), 4, 27);
 	BlitString("Level    ", 4,32);
-	DrawGreenBar(min ((int)(level * 0.3), 100.0), 4, 41);
+	DrawGreenBar(min(level, 100.0), 4, 41);
 	BlitString("Noise    ", 4,46);
-	DrawGreenBar(min ((int)(noise * 0.3), 100.0), 4, 55);
+	DrawGreenBar(min(noise, 100.0), 4, 55);
 	break;
       case 0: BlitString("NO CARD",4,4);
 	DrawEmptyDot();
@@ -292,11 +345,6 @@ void wmwave_routine(int argc, char **argv) {
       case DestroyNotify:
 	XCloseDisplay(display);
 	exit(0);
-      case ButtonPress:
-	switch (screen) {
-	case 0: screen=1; break;
-	case 1: screen=0; break;
-	};
 	break;
       }
     }
@@ -305,13 +353,14 @@ void wmwave_routine(int argc, char **argv) {
   }
 }
 
-/* get range information */
-int iw_getinf_range(const char *ifname, struct iw_range *range)
+/* get stats & range information */
+int iw_getinf_stats(const char *ifname, struct iw_range *range, struct iw_statistics *stats)
 {
     int 	skfd;
     struct iwreq iwr;
 
     memset(range, 0, sizeof(struct iw_range));
+    memset(stats, 0, sizeof(struct iw_statistics));
 
     if ((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 	    return 0;
@@ -330,6 +379,15 @@ int iw_getinf_range(const char *ifname, struct iw_range *range)
 	    close(skfd);
 	    return 0;
     }
+
+    iwr.u.data.pointer = (caddr_t)stats;
+    iwr.u.data.length = sizeof(struct iw_statistics);
+    iwr.u.data.flags = 0;
+    if (ioctl(skfd, SIOCGIWSTATS, &iwr) < 0) {
+	    close(skfd);
+	    return 0;
+    }
+
     close(skfd);
     return 1;
 }
