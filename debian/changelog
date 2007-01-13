@@ -1,3 +1,12 @@
+wmwave (0.4-7) unstable; urgency=low
+
+  * add patch from Julien BLACHE <jblache@debian.org> to use the proper ioctl
+    instead of parsing /proc/net/wireless, this also fixes some problems when
+    the driver reports values in dB or displays erratic values like the level
+    being higher than the max level - thanks a lot Julien.
+
+ -- Guido Guenther <agx@sigxcpu.org>  Sat, 13 Jan 2007 21:50:07 +0100
+
 wmwave (0.4-6) unstable; urgency=low
 
   * Build-Depend on the specific x libraries instead of libx11-dev
