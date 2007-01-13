@@ -4,8 +4,10 @@ wmwave (0.4-7) unstable; urgency=low
     instead of parsing /proc/net/wireless, this also fixes some problems when
     the driver reports values in dB or displays erratic values like the level
     being higher than the max level - thanks a lot Julien.
+  * bump standards version 
+  * update email address
 
- -- Guido Guenther <agx@sigxcpu.org>  Sat, 13 Jan 2007 21:50:07 +0100
+ -- Guido Guenther <agx@sigxcpu.org>  Sat, 13 Jan 2007 22:16:01 +0100
 
 wmwave (0.4-6) unstable; urgency=low
 

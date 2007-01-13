@@ -1,9 +1,9 @@
 Source: wmwave
 Section: x11
 Priority: optional
-Maintainer: Guido Guenther <agx@debian.org>
+Maintainer: Guido Guenther <agx@sigxcpu.org>
 Build-Depends: debhelper (>> 4), libxpm-dev, libxext-dev, libx11-dev
-Standards-Version: 3.6.2
+Standards-Version: 3.7.2
 
 Package: wmwave
 Architecture: any
