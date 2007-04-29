@@ -1,3 +1,10 @@
+wmwave (0.4-8) unstable; urgency=low
+
+  * UNRELEASED
+  * update homepage in debian/copyright and debian/control (Closes: #421405)
+
+ -- Guido Guenther <agx@sigxcpu.org>  Sun, 29 Apr 2007 13:12:00 +0200
+
 wmwave (0.4-7) unstable; urgency=low
 
   * add patch from Julien BLACHE <jblache@debian.org> to use the proper ioctl
