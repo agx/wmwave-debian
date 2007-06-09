@@ -50,11 +50,10 @@
 #include <sys/stat.h>
 #include <sys/param.h>
 #include <sys/types.h>
-#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 
-#include <linux/wireless.h>
+#include <iwlib.h>
 
 #include <X11/Xlib.h>
 #include <X11/xpm.h>
@@ -357,7 +356,7 @@ void wmwave_routine(int argc, char **argv) {
 int iw_getinf_stats(const char *ifname, struct iw_range *range, struct iw_statistics *stats)
 {
     int 	skfd;
-    struct iwreq iwr;
+    int		has_range;
 
     memset(range, 0, sizeof(struct iw_range));
     memset(stats, 0, sizeof(struct iw_statistics));
@@ -366,28 +365,12 @@ int iw_getinf_stats(const char *ifname, struct iw_range *range, struct iw_statis
 	    return 0;
     }
 	
-    strncpy(iwr.ifr_name, ifname, IFNAMSIZ);
-    if (ioctl(skfd, SIOCGIWNAME, &iwr) < 0) {
-	    close(skfd);
-	    return 0;
-    }
+    has_range = (iw_get_range_info(skfd, ifname, range) >= 0);
 
-    iwr.u.data.pointer = (caddr_t)range;
-    iwr.u.data.length = sizeof(struct iw_range);
-    iwr.u.data.flags = 0;
-    if (ioctl(skfd, SIOCGIWRANGE, &iwr) < 0) {
-	    close(skfd);
+    if(iw_get_stats(skfd, ifname, stats, range, has_range) < 0) {
+            close(skfd);
 	    return 0;
-    }
-
-    iwr.u.data.pointer = (caddr_t)stats;
-    iwr.u.data.length = sizeof(struct iw_statistics);
-    iwr.u.data.flags = 0;
-    if (ioctl(skfd, SIOCGIWSTATS, &iwr) < 0) {
-	    close(skfd);
-	    return 0;
-    }
-
+    };
     close(skfd);
     return 1;
 }

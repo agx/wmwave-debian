@@ -7,7 +7,7 @@
 # Added wmwave project to repository
 
 LIBDIR = -L/usr/X11R6/lib
-LIBS   = -lXpm -lXext -lX11 -lm
+LIBS   = -lXpm -lXext -lX11 -lm -liw
 CFLAGS = -O2 -Wall
 OBJS =	 \
 		wmgeneral.o \
