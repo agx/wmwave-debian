@@ -2,8 +2,9 @@ wmwave (0.4-8) unstable; urgency=low
 
   * use iwlib instead of doing the ioctl ourselfes (Closes: #427594, #406947, #225279)
   * update homepage in debian/copyright and debian/control (Closes: #421405)
+  * switch to debhelper 5 
 
- -- Guido Guenther <agx@sigxcpu.org>  Fri, 08 Jun 2007 16:22:17 +0200
+ -- Guido Guenther <agx@sigxcpu.org>  Sat, 09 Jun 2007 14:23:36 +0200
 
 wmwave (0.4-7) unstable; urgency=low
 
