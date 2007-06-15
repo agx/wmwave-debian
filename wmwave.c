@@ -133,9 +133,7 @@ void DisplayWireless(void) {
 
   float link;
   float level;
-  float max_level;
   float noise;
-  float max_noise;
 
 
   FILE *wireless;   // File handle for /proc/net/wireless
@@ -164,40 +162,37 @@ void DisplayWireless(void) {
 
 
       /* dBm values need a special treatment */
-      if (stats.qual.updated & IW_QUAL_DBM)
+      if ((stats.qual.updated & IW_QUAL_DBM) ||
+          (stats.qual.level > range.max_qual.level))
 	{
+	  /* some cards (like the atheros) simply don't give a floor */
+	  float noise_floor = range.max_qual.noise ? (float)(range.max_qual.noise - 0x100) : -128.0;
+	  float level_floor = range.max_qual.level ? (float)(range.max_qual.level - 0x100) : -128.0;
 
 	  level = (float)(stats.qual.level - 0x100);
-	  max_level = (float)(range.max_qual.level - 0x100);
-
 	  noise = (float)(stats.qual.noise - 0x100);
-	  max_noise = (float)(range.max_qual.noise - 0x100);
+
+	  level = 100.0 * ( 1.0 - (level / level_floor));
+	  noise = 100.0 * ( 1.0 - (noise / noise_floor));
 	}
       else
 	{
+	  float max_level = (float)range.max_qual.level;
+	  float max_noise = (float)range.max_qual.noise;
+
 	  level = (float)stats.qual.level;
-	  max_level = (float)range.max_qual.level;
-
 	  noise = (float)stats.qual.noise;
-	  max_noise = (float)range.max_qual.noise;
+
+	  level = 100.0 * level / max_level;
+	  noise = 100.0 * noise / max_noise;
 	}
 
-      if (!(stats.qual.updated & IW_QUAL_LEVEL_INVALID)
-	  && (fabsf(level) <= fabsf(max_level)))
-	{
-	  level /= max_level;
-	  level *= 100.0;
-	}
-      else
+      if ((stats.qual.updated & IW_QUAL_LEVEL_INVALID)
+	  || level < 0.0 || level > 100.0 )
 	level = 0.0;
 
-      if (!(stats.qual.updated & IW_QUAL_NOISE_INVALID)
-	  && (fabsf(noise) <= fabsf(max_noise)))
-	{
-	  noise /= max_noise;
-	  noise *= 100.0;
-	}
-      else
+      if ((stats.qual.updated & IW_QUAL_NOISE_INVALID)
+	  || noise < 0.0 || noise > 100.0 )
 	noise = 0.0;
 
       if (!(stats.qual.updated & IW_QUAL_QUAL_INVALID)

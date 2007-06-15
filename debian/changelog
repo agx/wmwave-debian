@@ -1,3 +1,10 @@
+wmwave (0.4-9) unstable; urgency=low
+
+  * fix noise and level calculation for dBm. Thanks to Paul Martin for
+    feedback and suggestions (Closes: #406947)
+
+ -- Guido Guenther <agx@sigxcpu.org>  Fri, 15 Jun 2007 16:33:33 +0200
+
 wmwave (0.4-8) unstable; urgency=low
 
   * use iwlib instead of doing the ioctl ourselfes (Closes: #427594, #406947, #225279)
