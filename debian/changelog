@@ -1,3 +1,11 @@
+wmwave (0.4-10) unstable; urgency=medium
+
+  * [38afc39] Switch to debhelper level 8
+    (Closes: #817725)
+  * [59d5acf] Use homepage field
+
+ -- Guido Günther <agx@sigxcpu.org>  Sun, 13 Mar 2016 00:29:58 +0100
+
 wmwave (0.4-9) unstable; urgency=low
 
   * fix noise and level calculation for dBm. Thanks to Paul Martin for
