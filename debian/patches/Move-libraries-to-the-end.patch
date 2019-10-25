@@ -1,0 +1,23 @@
+From: Reiner Herrmann <reiner@reiner-h.de>
+Date: Fri, 25 Oct 2019 23:27:40 +0200
+Subject: Move libraries to the end
+
+Fixes build with gcc-9
+Closes: #925859
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index bada21b..0484d6b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -21,7 +21,7 @@ wmwave.o: wmwave.c wmwave-master.xpm
+ 	cc $(CFLAGS) -I/usr/X11R6/share/include -c wmwave.c -o $*.o
+ 
+ wmwave: $(OBJS) wmwave.o
+-	cc $(CFLAGS) -o wmwave $(OBJS) -lXext $(LIBDIR) $(LIBS) wmwave.o
++	cc $(CFLAGS) -o wmwave $(OBJS) $(LIBDIR) wmwave.o -lXext $(LIBS)
+ 
+ all:: wmwave
+ 
