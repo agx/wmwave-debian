@@ -2,13 +2,19 @@ Source: wmwave
 Section: x11
 Priority: optional
 Maintainer: Guido Guenther <agx@sigxcpu.org>
-Build-Depends: debhelper (>= 12~), libxpm-dev, libxext-dev, libx11-dev, libiw-dev
+Build-Depends:
+ debhelper (>= 12~),
+ libiw-dev,
+ libx11-dev,
+ libxext-dev,
+ libxpm-dev,
 Standards-Version: 3.7.2
 Homepage: http://wmwave.sourceforge.net
 
 Package: wmwave
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends:
+ ${shlibs:Depends},
 Description: Monitor status of an 802.11 wireless ethernet link
  wmwave is dockapp for Window Maker to display statistical information
  about a current wireless ethernet connection.  While made for Window
