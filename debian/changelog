@@ -1,3 +1,18 @@
+wmwave (0.4-11) unstable; urgency=medium
+
+  [ Guido Günther ]
+  * Use 3.0 (quilt) format
+  * Move Debian delta to debian/patches
+  * Switch to dh
+  * Switch to debhelper compat level 12
+  * Bump standards version
+
+  [ Reiner Herrmann ]
+  * Move libraries to the end
+    (Closes: #925859)
+
+ -- Guido Günther <agx@sigxcpu.org>  Fri, 25 Oct 2019 23:59:08 +0200
+
 wmwave (0.4-10) unstable; urgency=medium
 
   * [38afc39] Switch to debhelper level 8
