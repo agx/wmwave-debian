@@ -8,7 +8,7 @@ Build-Depends:
  libx11-dev,
  libxext-dev,
  libxpm-dev,
-Standards-Version: 3.7.2
+Standards-Version: 4.4.0
 Homepage: http://wmwave.sourceforge.net
 
 Package: wmwave
