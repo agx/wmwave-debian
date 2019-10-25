@@ -2,7 +2,7 @@ Source: wmwave
 Section: x11
 Priority: optional
 Maintainer: Guido Guenther <agx@sigxcpu.org>
-Build-Depends: debhelper (>= 8~), libxpm-dev, libxext-dev, libx11-dev, libiw-dev
+Build-Depends: debhelper (>= 12~), libxpm-dev, libxext-dev, libx11-dev, libiw-dev
 Standards-Version: 3.7.2
 Homepage: http://wmwave.sourceforge.net
 

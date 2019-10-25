@@ -6,7 +6,8 @@
 wmwave
 .SH SYNOPSIS
 .B wmwave
-[\-c command]
+.BI [\-r \ time ]
+.B [\-v]
 .SH DESCRIPTION
 .B wmwave
 displays, as a WindowMaker dockapp, statistical information for 
@@ -14,12 +15,14 @@ wireless ethernet.
 .SH OPTIONS
 
 .TP
-.I \-r time
+.BI \-v
+Display the version
+.TP
+.BI \-r \ time
 Sets the update interval (in milliseconds), default: 100
-
-.I \-display display
+.TP
+.BI \-display \ display
 This option specifies the X server to contact; see X(1).
-
 
 .SH BUGS
 Please report any bugs you may find to:
